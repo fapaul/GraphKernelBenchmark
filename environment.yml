@@ -1,0 +1,12 @@
+name: graph_kernels
+dependencies:
+- pip=9.0.1=py36_1
+- python=3.6.2=0
+- pip:
+  - cython==0.28.2
+  - grakel-dev==0.1a3
+  - jupyter==1.0.0
+  - numpy==1.14.3
+  - pandas==0.23.0
+  - scikit-learn==0.19.1
+  - scipy==1.1.0
