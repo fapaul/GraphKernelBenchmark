@@ -31,8 +31,10 @@ def score_n_fold(train, test, n, c):
 
 def evaluate(kernel_class, dataset_name, output_path, data_dir):
     kernel = kernel_class(dataset_name, output_path, data_dir)
+    kernel.compile()
     kernel.load_data()
-    kernel_matrices_path = kernel.compute_kernel_matrices()
+    kernel_matrices_paths = kernel.compute_kernel_matrices()
+    kernel_matrices_path = kernel_matrices_paths[0]
     label_path = os.path.join(data_dir, dataset_name,
                               '{}_graph_labels.txt'.format(dataset_name))
     kernel_matrices = read_matrix(kernel_matrices_path, read_kernel_matrix)

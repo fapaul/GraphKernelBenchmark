@@ -8,16 +8,16 @@ from scipy import sparse as sps
 class MLGKernel(kernel.Kernel):
 
     def load_data(self):
-        matrices = self.load_dense_matrix(self.dataset, self.name)
+        matrices = self.load_dense_matrix(self.dataset, self.datasetname)
         lines = self.convert_to_mlg_format(matrices)
-        self.tmp_file = 'MLG_{}_converted.txt'.format(self.name)
+        self.tmp_file = 'MLG_{}_converted.txt'.format(self.datasetname)
         with open(os.path.join(self.get_tmp_dir(), self.tmp_file), 'w') as f:
             f.write('\n'.join(lines))
 
     def compute_kernel_matrices(self):
         converted = os.path.join(self.get_tmp_dir(), self.tmp_file)
         env = os.environ.copy()
-        env['DSET'] = self.name
+        env['DSET'] = self.datasetname
         env['DATA'] = converted
         output = os.path.join(self.output_path, 'MLG')
         env['OUTPUT'] = output
@@ -25,7 +25,7 @@ class MLGKernel(kernel.Kernel):
                                   'MLGkernel')
         p = subprocess.Popen(['sh', 'sample.sh'], env=env, cwd=repo_start)
         p.wait()
-        return os.path.join(output, self.name + '_output.txt')
+        return [os.path.join(output, self.datasetname + '_output.txt')]
 
     @staticmethod
     def load_dense_matrix(data_dir, dataset):

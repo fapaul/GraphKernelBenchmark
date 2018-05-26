@@ -20,10 +20,22 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-    if (argc != 3) {
-        cout << "Usage: ./glocalwc datasetname algorithmname";
+    bool use_labels = false;
+    int num_iterations = 1;
+    bool use_iso_type = false;
+    if (argc != 7) {
+        cout << "Usage: ./glocalwc datasetname algorithmname -l/-nl num_iterations -i/-ni output_path\n";
         return 1;
     }
+
+    if (argv[3] == "-l") {
+        use_labels = true;
+    }
+    num_iterations = stoi(argv[4]);
+    if (argv[5] == "-i") {
+        use_iso_type = true;
+    }
+
 
     string graph_database_name = argv[1];
     string kernel = argv[2];
@@ -32,41 +44,38 @@ int main(int argc, char* argv[]) {
 
     GramMatrix gm;
 
-    switch(kernel) {
-    case "WL3L":
-        WeisfeilerLehmanThreeLocal::WeisfeilerLehmanThreeLocal spk(gdb);
-        gm = spk.compute_gram_matrix(false);
-        break;
-    case "ShortestPath":
+    if (kernel == "WL3L") {
+        WeisfeilerLehmanThreeLocal::WeisfeilerLehmanThreeLocal w3l(gdb);
+        gm = w3l.compute_gram_matrix(num_iterations, use_labels, use_iso_type);
+    } else if (kernel == "ShortestPath") {
         ShortestPathKernel::ShortestPathKernel spk(gdb);
-        gm = spk.compute_gram_matrix(false);
-        break;
-    case "Graphlet":
-        GraphletKernel::GraphletKernel gk(gdb);
-        gm = gk.compute_gram_matrix(true);
-        break;
-    case "WL2L":
-        WeisfeilerLehmanTwoLocal::WeisfeilerLehmanTwoLocal spk(gdb);
-        gm = spk.compute_gram_matrix(false);
-        break;
-    case "WL3G":
-        WeisfeilerLehmanThreeGlobal::WeisfeilerLehmanThreeGlobal spk(gdb);
-        gm = spk.compute_gram_matrix(false);
-        break;
-    case "WL2G":
-        WeisfeilerLehmanTwoGlobal::WeisfeilerLehmanTwoGlobal spk(gdb);
-        gm = spk.compute_gram_matrix(false);
-        break;
-    case "ColorRefinement":
-        ColorRefinement::ColorRefinementKernel spk(gdb);
-        gm = spk.compute_gram_matrix(false);
-        break;
-    default:
-        cout << "Argument not supported (Typo?)" << endl;
-        break;
-    }
+        gm = spk.compute_gram_matrix(use_labels);
 
-    AuxiliaryMethods::write_gram_matrix(gm, graph_database_name + "_" + kernel);
+    } else if (kernel == "Graphlet") {
+        GraphletKernel::GraphletKernel gk(gdb);
+        gm = gk.compute_gram_matrix(use_labels);
+
+    } else if (kernel == "WL2L") {
+        WeisfeilerLehmanTwoLocal::WeisfeilerLehmanTwoLocal w2l(gdb);
+        gm = w2l.compute_gram_matrix(num_iterations, use_labels, use_iso_type);
+
+    } else if (kernel == "WL3G") {
+        WeisfeilerLehmanThreeGlobal::WeisfeilerLehmanThreeGlobal w3g(gdb);
+        gm = w3g.compute_gram_matrix(num_iterations, use_labels, use_iso_type);
+
+    } else if (kernel == "WL2G") {
+        WeisfeilerLehmanTwoGlobal::WeisfeilerLehmanTwoGlobal w2g(gdb);
+        gm = w2g.compute_gram_matrix(num_iterations, use_labels, use_iso_type);
+
+    } else if (kernel == "ColorRefinement") {
+        ColorRefinement::ColorRefinementKernel cr(gdb);
+        gm = cr.compute_gram_matrix(num_iterations, use_labels);
+
+    } else {
+        cout << "Argument not supported (Typo?)" << endl;
+
+    }
+    AuxiliaryMethods::write_gram_matrix(gm, argv[6]);
 
     return 0;
 }
