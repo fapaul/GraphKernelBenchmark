@@ -1,0 +1,3 @@
+[submodule "kernels/MLG/MLGkernel"]
+	path = kernels/MLG/MLGkernel
+	url = https://github.com/mockingbird2/MLGkernel
