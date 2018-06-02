@@ -20,6 +20,8 @@ class MLGKernel(kernel.Kernel):
         env['DSET'] = self.datasetname
         env['DATA'] = converted
         output = os.path.join(self.output_path, 'MLG')
+        if not os.path.exists(output):
+            os.makedirs(output)
         env['OUTPUT'] = output
         repo_start = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                   'MLGkernel')

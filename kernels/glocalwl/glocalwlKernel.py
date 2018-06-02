@@ -15,13 +15,14 @@ class GlocalWLKernel(kernel.Kernel):
     #all kernels use first parameter argument #1, WL and CR use #2, WL use #3
 
     def __init__(self, dataset_name, output_path, dataset_path, parameter_combinations, kernel_name):
-        super(kernel.Kernel,self).__init__(dataset_name, output_path, dataset_path)
+        super().__init__(dataset_name, output_path, dataset_path)
         self.parameter_combinations = parameter_combinations
         self.kernel_name = kernel_name
 
     def compile(self):
-        p = subprocess.Popen(['sh', 'compile.sh'])
-        p.wait()
+        pass
+        #p = subprocess.Popen(['sh', 'compile.sh'])
+        #p.wait()
 
     def load_data(self):
         #is being done once kernel computes
@@ -30,8 +31,9 @@ class GlocalWLKernel(kernel.Kernel):
     def compute_kernel_matrices(self):
         output_paths = []
         for para_combination in self.parameter_combinations:
-            output_path = os.path.join(self.get_tmp_dir(), "glocalwl_"+self.kernel_name+"_"+para_combination[0]+"_"+para_combination[1]+"_"+para_combination[2])
+            output_path = os.path.join(self.output_path, "glocalwl_"+self.kernel_name+"_"+para_combination[0]+"_"+para_combination[1]+"_"+para_combination[2])
             output_paths.append(output_path)
-            p = subprocess.Popen(['./glocalwl', self.datasetname, self.kernel_name, para_combination[0], para_combination[1], para_combination[2], output_path])
+            exec_path = os.path.join('kernels','glocalwl','globalwl')
+            p = subprocess.Popen([exec_path, self.datasetname, self.kernel_name, para_combination[0], para_combination[1], para_combination[2], output_path])
             p.wait()
-        return output_paths #TODO check if output files conform to expected format
+        return output_paths

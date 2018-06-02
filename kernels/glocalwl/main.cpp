@@ -16,6 +16,7 @@
 #include "src/GraphletKernel.h"
 #include "src/ColorRefinementKernel.h"
 #include "src/ShortestPathKernel.h"
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -24,7 +25,7 @@ int main(int argc, char* argv[]) {
     int num_iterations = 1;
     bool use_iso_type = false;
     if (argc != 7) {
-        cout << "Usage: ./glocalwc datasetname algorithmname -l/-nl num_iterations -i/-ni output_path\n";
+        cout << "Usage: ./globalwl datasetname algorithmname -l/-nl num_iterations -i/-ni output_path\n";
         return 1;
     }
 
@@ -36,7 +37,7 @@ int main(int argc, char* argv[]) {
         use_iso_type = true;
     }
 
-
+    
     string graph_database_name = argv[1];
     string kernel = argv[2];
     cout << graph_database_name << " " << kernel << endl;

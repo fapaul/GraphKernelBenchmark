@@ -8,7 +8,6 @@
  *********************************************************************/
 
 #include "AuxiliaryMethods.h"
-
 using Eigen::IOFormat;
 using Eigen::MatrixXd;
 using namespace std;
@@ -31,7 +30,7 @@ namespace AuxiliaryMethods {
         string line;
         vector<uint> graph_indicator;
         ifstream myfile(
-                "../../datasets/" + data_set_name + "/" + data_set_name +
+                "./datasets/" + data_set_name + "/" + data_set_name +
                 "_graph_indicator.txt");
         if (myfile.is_open()) {
             while (getline(myfile, line)) {
@@ -86,7 +85,7 @@ namespace AuxiliaryMethods {
 
         // Insert edges for each graph.
         vector<int> edges;
-        ifstream edge_file("./data_sets/" + data_set_name + "/" + data_set_name + "_A.txt");
+        ifstream edge_file("./datasets/" + data_set_name + "/" + data_set_name + "_A.txt");
         if (edge_file.is_open()) {
             while (getline(edge_file, line)) {
                 vector<int> r = split_string(line);
@@ -103,7 +102,7 @@ namespace AuxiliaryMethods {
             }
             edge_file.close();
         } else {
-            printf("%s", "!!! Unable to open file !!!\n");
+            printf("%s", "!!! Unable to open edge file !!!\n");
             exit(EXIT_FAILURE);
         }
 
@@ -111,7 +110,7 @@ namespace AuxiliaryMethods {
     }
 
     void write_gram_matrix(const GramMatrix &gram_matrix, string file_name) {
-        const IOFormat CSVFormat(10, 1, ", ", "\n");
+        const IOFormat CSVFormat(10, 1, " ", "\n");
         ofstream file(file_name.c_str());
 
         // Convert sparse matrix to dense matrix to write it out to a file.
