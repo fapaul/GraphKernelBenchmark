@@ -1,5 +1,10 @@
 name: graph_kernels
+channels:
+- defaults
+- conda-forge
+- flyem-forge
 dependencies:
+- graph-tool
 - pip=9.0.1=py36_1
 - python=3.6.2=0
 - pip:
