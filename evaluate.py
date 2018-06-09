@@ -47,7 +47,7 @@ def evaluate(kernel, dataset_name, output_path, data_dir):
 
 if __name__ == '__main__':
     kernels = [MLGKernel]
-    dataset_name = 'MUTAG'
+    dataset_name = 'TEST'
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(os.path.join(current_dir, 'tmp')):
         os.makedirs(os.path.join(current_dir, 'tmp'))
