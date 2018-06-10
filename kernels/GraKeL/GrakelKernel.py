@@ -10,9 +10,9 @@ from collections import Counter
 
 class GrakelKernel(kernel.Kernel):
 
-    def __init__(self, dataset_name, output_path, dataset_path, parameter_combinations, kernel_name):
+    def __init__(self, dataset_name, output_path, dataset_path, parameters, kernel_name):
         super().__init__(dataset_name, output_path, dataset_path)
-        self.parameter_combinations = parameter_combinations
+        self.parameters = parameters
         self.kernel_name = kernel_name
 
     def compile(self):
@@ -29,6 +29,38 @@ class GrakelKernel(kernel.Kernel):
         #TODO configure other kernels and parameters
         if self.kernel_name == "Propagation":
             kernel = grakel.Propagation(n_jobs=None, verbose=False, normalize=True, random_seed=42, M='TV', t_max=4, w=0.0001)
+        elif self.kernel_name == "RandomWalk":
+            kernel = grakel.RandomWalk()
+        elif self.kernel_name == "PyramidMatch":
+            kernel = grakel.PyramidMatch(with_labels=True, L=4, d=6)
+        elif self.kernel_name == "VertexHistogram":
+            kernel = grakel.VertexHistogram()
+        elif self.kernel_name == "WeisfeilerLehman":
+            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0]}])
+        elif self.kernel_name == "ShortestPath":
+            kernel = grakel.ShortestPath()
+        elif self.kernel_name == "GraphletSampling":
+            kernel = grakel.GraphletSampling()
+        elif self.kernel_name == "LovaszTheta":
+            kernel = grakel.LovaszTheta()
+        elif self.kernel_name == "SVMTheta":
+            kernel = grakel.SvmTheta()
+        elif self.kernel_name == "MultiscaleLaplacian":
+            kernel = grakel.MultiscaleLaplacian()
+        elif self.kernel_name == "NeighborhoodHash":
+            kernel = grakel.NeighborhoodHash()
+        elif self.kernel_name == "NeighborhoodSubgraphPairwiseDistance":
+            kernel = grakel.NeighborhoodSubgraphPairwiseDistance()
+        elif self.kernel_name == "GraphHopper":
+            kernel = grakel.GraphHopper()
+        elif self.kernel_name == "SubgraphMatching":
+            kernel = grakel.SubgraphMatching()
+        elif self.kernel_name == "EdgeHistogram":
+            kernel = grakel.EdgeHistogram()
+        elif self.kernel_name == "OddSth":
+            kernel = grakel.OddSth()
+        else:
+            kernel = grakel.GraphKernel([{"name": self.parameters[0]}])
         kernelmatrix = kernel.fit_transform(G)
         np.savetxt(os.path.join(self.output_path,self.kernel_name), kernelmatrix, delimiter=' ', newline='\n')
         return [os.path.join(self.output_path,self.kernel_name)]
