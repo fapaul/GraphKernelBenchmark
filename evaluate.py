@@ -1,13 +1,11 @@
 import os
 
+import argparse
 import numpy as np
 from sklearn import svm
 from sklearn.model_selection import ShuffleSplit, cross_val_score
+from config import get_benchmarking_kernels
 
-from kernels.MLG import MLGKernel
-from kernels.GraKeL import GrakelKernel
-from kernels.glocalwl import GlocalWLKernel
-import grakel
 
 def read_label_matrix(line):
     return line.strip()
@@ -22,6 +20,7 @@ def read_matrix(file_path, formatter):
         with open(file_path, 'r') as f:
             for line in f:
                 yield formatter(line)
+
     return np.array(list(read()))
 
 
@@ -31,7 +30,7 @@ def score_n_fold(train, test, n, c):
     return cross_val_score(clf, train, test, cv=cv).mean(), c
 
 
-def evaluate(kernel, dataset_name, output_path, data_dir):
+def evaluate(kernel, dataset_name, data_dir):
     kernel.compile()
     kernel.load_data()
     kernel_matrices_paths = kernel.compute_kernel_matrices()
@@ -45,41 +44,23 @@ def evaluate(kernel, dataset_name, output_path, data_dir):
     return scores
 
 
-if __name__ == '__main__':
-    dataset_name = 'TEST'
+def run_benchmark(dataset_name):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(os.path.join(current_dir, 'tmp')):
         os.makedirs(os.path.join(current_dir, 'tmp'))
     output_path = os.path.join(current_dir, 'tmp', 'results')
     data_dir = os.path.join(current_dir, 'datasets')
-    kernels = []
-    # kernels.append(MLGKernel(dataset_name, output_path, data_dir))
-    #those parameters might not be ideal, especially 1
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3L"))
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "2", "-i"]], "WL3L"))
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2L")) #high runtime
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3G"))
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2G"))
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ShortestPath")) #old, high runtime
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ColorRefinement"))
-    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "Graphlet"))
-    #all use GraKeL default parameters - might not be as authors intended
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "Propagation"))
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "VertexHistogram"))
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "PyramidMatch"))
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, ["subtree_wl"], "WeisfeilerLehman")) #WL Subtree
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "RandomWalk")) #high runtime
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "GraphletSampling")) # very high runtime
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "ShortestPath"))
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "LovaszTheta")) #needs another library
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "SVMTheta"))
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodHash"))
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodSubgraphPairwiseDistance")) #high runtime
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "SubgraphMatching")) #high runtime
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "OddSth"))
-    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "EdgeHistogram"))
-    
-    for kernel in kernels:            
-        print(kernel.kernel_name, evaluate(kernel, dataset_name, output_path, data_dir))
+    kernels = get_benchmarking_kernels(dataset_name, output_path, data_dir)
+    for kernel in kernels:
+        yield kernel.kernel_name, evaluate(kernel, dataset_name, data_dir)
 
 
+def main():
+    parser = argparse.ArgumentParser(description='Starting benchmark')
+    parser.add_argument('-d', '--data', help='Bechmark dataset', required=True)
+    dataset = vars(parser.parse_args())['data']
+    print(list(run_benchmark(dataset)))
+
+
+if __name__ == '__main__':
+    main()

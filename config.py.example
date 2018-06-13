@@ -1,0 +1,33 @@
+from kernels import *
+
+
+def get_benchmarking_kernels(dataset_name, output_path, data_dir):
+    return [
+        MLGKernel(dataset_name, output_path, data_dir),
+
+        #those parameters might not be ideal, especially 1
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3L"),
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "2", "-i"]], "WL3L"),
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2L"), #high runtime
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3G"),
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2G"),
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ShortestPath"), #old, high runtime
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ColorRefinement"),
+        GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "Graphlet"),
+
+        #all use GraKeL default parameters - might not be as authors intended
+        GrakelKernel(dataset_name, output_path, data_dir, [], "Propagation"),
+        GrakelKernel(dataset_name, output_path, data_dir, [], "VertexHistogram"),
+        GrakelKernel(dataset_name, output_path, data_dir, [], "PyramidMatch"),
+        GrakelKernel(dataset_name, output_path, data_dir, ["subtree_wl"], "WeisfeilerLehman"), #WL Subtree
+        GrakelKernel(dataset_name, output_path, data_dir, [], "RandomWalk"), #high runtime
+        GrakelKernel(dataset_name, output_path, data_dir, [], "GraphletSampling"), # very high runtime
+        GrakelKernel(dataset_name, output_path, data_dir, [], "ShortestPath"),
+        GrakelKernel(dataset_name, output_path, data_dir, [], "LovaszTheta"), #needs another library
+        GrakelKernel(dataset_name, output_path, data_dir, [], "SVMTheta"),
+        GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodHash"),
+        GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodSubgraphPairwiseDistance"), #high runtime
+        GrakelKernel(dataset_name, output_path, data_dir, [], "SubgraphMatching"), #high runtime
+        GrakelKernel(dataset_name, output_path, data_dir, [], "OddSth"),
+        GrakelKernel(dataset_name, output_path, data_dir, [], "EdgeHistogram")
+    ]

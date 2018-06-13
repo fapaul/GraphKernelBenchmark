@@ -9,14 +9,32 @@ source activate graph_kernels
 
 ```
 
-Navigate to /kernels/MLG/MLGkernel
-Edit path to Eigen in Makefile.options (even if it is included globally, it could be in usr/local/include or in usr/include)
+# Setup
+
+Navigate to `/kernels/MLG/MLGkernel`
+and edit path to Eigen in `Makefile.options` (even if it is included globally, it could be in `usr/local/include` or in `usr/include`)
 ```
 make all
 ```
 
-Navigate to /kernesl/glocalwl and use
+Navigate to `/kernels/glocalwl` and use
 ```
 cmake ./
 make
+```
+
+Change name of `config.py.example` to `config.py` and choose kernels to compare.
+
+# Run
+
+Set `-d` parameter to an existing folder in `datasets` directory. 
+
+```
+usage: evaluate.py [-h] -d DATA
+
+Starting benchmark
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DATA, --data DATA  Bechmark dataset
 ```

@@ -19,7 +19,6 @@ class GrakelKernel(kernel.Kernel):
         pass
 
     def load_data(self):
-        #is being done once kernel computes
         pass
 
     def compute_kernel_matrices(self):
@@ -119,16 +118,15 @@ class GrakelKernel(kernel.Kernel):
             of the `Gs` iterable. Useful for classification.
 
         '''
-        folder_path = "datasets/"
-        indicator_path = "./"+folder_path+str(name)+"/"+str(name)+"_graph_indicator.txt"
-        edges_path = "./"+folder_path + str(name) + "/" + str(name) + "_A.txt"
-        node_labels_path = "./"+folder_path + str(name) + "/" + str(name) + "_node_labels.txt"
-        node_attributes_path = "./"+folder_path+str(name)+"/"+str(name)+"_node_attributes.txt"
-        edge_labels_path = "./"+folder_path + str(name) + "/" + str(name) + "_edge_labels.txt"
+        indicator_path = self.dataset + '/' + str(name)+"/"+str(name)+"_graph_indicator.txt"
+        edges_path = self.dataset + '/' + str(name) + "/" + str(name) + "_A.txt"
+        node_labels_path = self.dataset + '/' + str(name) + "/" + str(name) + "_node_labels.txt"
+        node_attributes_path = self.dataset + '/' + str(name)+"/"+str(name)+"_node_attributes.txt"
+        edge_labels_path = self.dataset + '/' + str(name) + "/" + str(name) + "_edge_labels.txt"
         edge_attributes_path = \
-            "./"+folder_path + str(name) + "/" + str(name) + "_edge_attributes.txt"
+            self.dataset + '/' + str(name) + "/" + str(name) + "_edge_attributes.txt"
         graph_classes_path = \
-            "./"+folder_path + str(name) + "/" + str(name) + "_graph_labels.txt"
+            self.dataset + '/' + str(name) + "/" + str(name) + "_graph_labels.txt"
 
         # node graph correspondence
         ngc = dict()
