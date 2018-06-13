@@ -27,7 +27,7 @@ Change name of `config.py.example` to `config.py` and choose kernels to compare.
 
 # Run
 
-Set `-d` parameter to an existing folder in `datasets` directory. 
+Set `-d` parameter to folder in names `datasets` directory. Folder names need to be separated by a whitespace.
 
 ```
 usage: evaluate.py [-h] -d DATA

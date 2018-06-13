@@ -1,7 +1,9 @@
 import os
+import json
 
 import argparse
 import numpy as np
+from collections import defaultdict
 from sklearn import svm
 from sklearn.model_selection import ShuffleSplit, cross_val_score
 from config import get_benchmarking_kernels
@@ -44,22 +46,27 @@ def evaluate(kernel, dataset_name, data_dir):
     return scores
 
 
-def run_benchmark(dataset_name):
+def run_benchmark(dataset_names):
+    print('Tested datasets: ', dataset_names)
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(os.path.join(current_dir, 'tmp')):
         os.makedirs(os.path.join(current_dir, 'tmp'))
     output_path = os.path.join(current_dir, 'tmp', 'results')
     data_dir = os.path.join(current_dir, 'datasets')
-    kernels = get_benchmarking_kernels(dataset_name, output_path, data_dir)
-    for kernel in kernels:
-        yield kernel.kernel_name, evaluate(kernel, dataset_name, data_dir)
+    result = defaultdict(list)
+    for dataset_name in dataset_names:
+        kernels = get_benchmarking_kernels(dataset_name, output_path, data_dir)
+        for kernel in kernels:
+            benchmark_result = evaluate(kernel, dataset_name, data_dir)
+            result[dataset_name].append((kernel.kernel_name, benchmark_result))
+    return result
 
 
 def main():
     parser = argparse.ArgumentParser(description='Starting benchmark')
-    parser.add_argument('-d', '--data', help='Bechmark dataset', required=True)
-    dataset = vars(parser.parse_args())['data']
-    print(list(run_benchmark(dataset)))
+    parser.add_argument('-d', '--data', help='Bechmark dataset', required=True, nargs='+')
+    datasets = vars(parser.parse_args())['data']
+    print(json.dumps(run_benchmark(datasets), indent=4))
 
 
 if __name__ == '__main__':

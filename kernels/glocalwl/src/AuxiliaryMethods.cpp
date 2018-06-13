@@ -30,7 +30,7 @@ namespace AuxiliaryMethods {
         string line;
         vector<uint> graph_indicator;
         ifstream myfile(
-                "./datasets/" + data_set_name + "/" + data_set_name +
+                data_set_name +
                 "_graph_indicator.txt");
         if (myfile.is_open()) {
             while (getline(myfile, line)) {
@@ -49,7 +49,7 @@ namespace AuxiliaryMethods {
         string label;
         Labels node_labels;
         ifstream labels(
-                "./data_sets/" + data_set_name + "/" + data_set_name + "_node_labels.txt");
+                data_set_name + "_node_labels.txt");
         if (labels.is_open()) {
             while (getline(labels, label)) {
                 node_labels.push_back(stoul(label));
@@ -85,7 +85,7 @@ namespace AuxiliaryMethods {
 
         // Insert edges for each graph.
         vector<int> edges;
-        ifstream edge_file("./datasets/" + data_set_name + "/" + data_set_name + "_A.txt");
+        ifstream edge_file(data_set_name + "_A.txt");
         if (edge_file.is_open()) {
             while (getline(edge_file, line)) {
                 vector<int> r = split_string(line);
