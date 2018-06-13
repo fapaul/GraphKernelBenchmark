@@ -17,6 +17,7 @@
 using Eigen::SparseMatrix;
 using namespace std;
 
+using ulong = unsigned long;
 using uint = unsigned int;
 using Node = uint;
 using Nodes = vector<Node>;

@@ -1,8 +1,7 @@
-import subprocess
 import os
-import numpy as np
+import subprocess
+
 from .. import kernel
-from scipy import sparse as sps
 
 
 class GlocalWLKernel(kernel.Kernel):
@@ -18,15 +17,6 @@ class GlocalWLKernel(kernel.Kernel):
         super().__init__(dataset_name, output_path, dataset_path)
         self.parameter_combinations = parameter_combinations
         self.kernel_name = kernel_name
-
-    def compile(self):
-        pass
-        #p = subprocess.Popen(['sh', 'compile.sh'])
-        #p.wait()
-
-    def load_data(self):
-        #is being done once kernel computes
-        pass
 
     def compute_kernel_matrices(self):
         output_paths = []

@@ -7,6 +7,10 @@ from scipy import sparse as sps
 
 class MLGKernel(kernel.Kernel):
 
+    def __init__(self, dataset_name, output_path, dataset_path):
+        super().__init__(dataset_name, output_path, dataset_path)
+        self.kernel_name = 'MLG'
+
     def load_data(self):
         matrices = self.load_dense_matrix(self.dataset, self.datasetname)
         lines = self.convert_to_mlg_format(matrices)

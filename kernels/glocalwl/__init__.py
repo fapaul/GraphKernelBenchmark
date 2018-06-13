@@ -1,1 +1,1 @@
-from .glocalwlkernel import GlocalWLKernel
+from .glocalwlKernel import GlocalWLKernel

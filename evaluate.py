@@ -5,8 +5,8 @@ from sklearn import svm
 from sklearn.model_selection import ShuffleSplit, cross_val_score
 
 from kernels.MLG import MLGKernel
-from kernels.glocalwl import GlocalWLKernel
 from kernels.GraKeL import GrakelKernel
+from kernels.glocalwl import GlocalWLKernel
 import grakel
 
 def read_label_matrix(line):
@@ -32,7 +32,6 @@ def score_n_fold(train, test, n, c):
 
 
 def evaluate(kernel, dataset_name, output_path, data_dir):
-    #kernel = kernel_class(dataset_name, output_path, data_dir)
     kernel.compile()
     kernel.load_data()
     kernel_matrices_paths = kernel.compute_kernel_matrices()
@@ -47,40 +46,40 @@ def evaluate(kernel, dataset_name, output_path, data_dir):
 
 
 if __name__ == '__main__':
-    dataset_name = 'MUTAG'
+    dataset_name = 'TEST'
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(os.path.join(current_dir, 'tmp')):
         os.makedirs(os.path.join(current_dir, 'tmp'))
     output_path = os.path.join(current_dir, 'tmp', 'results')
     data_dir = os.path.join(current_dir, 'datasets')
     kernels = []
-    #kernels.append(MLGKernel(dataset_name, output_path, data_dir))
+    # kernels.append(MLGKernel(dataset_name, output_path, data_dir))
     #those parameters might not be ideal, especially 1
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3L"))
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "2", "-i"]], "WL3L"))
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2L")) #high runtime
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3G"))
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2G"))
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ShortestPath")) #old, high runtime
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ColorRefinement"))
-    #kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "Graphlet"))
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3L"))
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "2", "-i"]], "WL3L"))
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2L")) #high runtime
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL3G"))
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "WL2G"))
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ShortestPath")) #old, high runtime
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "ColorRefinement"))
+    # kernels.append(GlocalWLKernel(dataset_name, output_path, data_dir, [["-l", "1", "-i"]], "Graphlet"))
     #all use GraKeL default parameters - might not be as authors intended
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "Propagation"))
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "VertexHistogram"))
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "PyramidMatch"))
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, ["subtree_wl"], "WeisfeilerLehman")) #WL Subtree
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "RandomWalk")) #high runtime
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "GraphletSampling")) # very high runtime
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "ShortestPath"))
-    ##kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "LovaszTheta")) #needs another library
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "SVMTheta"))
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodHash"))
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodSubgraphPairwiseDistance")) #high runtime
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "SubgraphMatching")) #high runtime
-    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "OddSth"))
-    kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "EdgeHistogram"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "Propagation"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "VertexHistogram"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "PyramidMatch"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, ["subtree_wl"], "WeisfeilerLehman")) #WL Subtree
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "RandomWalk")) #high runtime
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "GraphletSampling")) # very high runtime
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "ShortestPath"))
+    #kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "LovaszTheta")) #needs another library
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "SVMTheta"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodHash"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "NeighborhoodSubgraphPairwiseDistance")) #high runtime
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "SubgraphMatching")) #high runtime
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "OddSth"))
+    # kernels.append(GrakelKernel(dataset_name, output_path, data_dir, [], "EdgeHistogram"))
     
     for kernel in kernels:            
-        print(evaluate(kernel, dataset_name, output_path, data_dir))
+        print(kernel.kernel_name, evaluate(kernel, dataset_name, output_path, data_dir))
 
 
