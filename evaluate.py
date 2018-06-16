@@ -1,12 +1,22 @@
 import os
 import json
 
+import time
 import argparse
 import numpy as np
 from collections import defaultdict
 from sklearn import svm
 from sklearn.model_selection import ShuffleSplit, cross_val_score
 from config import get_benchmarking_kernels
+
+
+def timer(runnable):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = runnable(*args, **kwargs)
+        return result, time.time() - start
+
+    return wrapper
 
 
 def read_label_matrix(line):
@@ -32,10 +42,17 @@ def score_n_fold(train, test, n, c):
     return cross_val_score(clf, train, test, cv=cv).mean(), c
 
 
+@timer
+def generate_kernels(kernel):
+    return kernel.compute_kernel_matrices()
+
+
 def evaluate(kernel, dataset_name, data_dir):
+    print('Running: ', kernel.kernel_name)
     kernel.compile()
+
     kernel.load_data()
-    kernel_matrices_paths = kernel.compute_kernel_matrices()
+    kernel_matrices_paths, run_time = generate_kernels(kernel)
     kernel_matrices_path = kernel_matrices_paths[0]
     label_path = os.path.join(data_dir, dataset_name,
                               '{}_graph_labels.txt'.format(dataset_name))
@@ -43,7 +60,7 @@ def evaluate(kernel, dataset_name, data_dir):
     labels = read_matrix(label_path, read_label_matrix)
     penalties = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
     scores = [score_n_fold(kernel_matrices, labels, 10, c) for c in penalties]
-    return scores
+    return scores, run_time
 
 
 def run_benchmark(dataset_names):
