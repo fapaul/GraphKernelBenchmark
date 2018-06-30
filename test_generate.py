@@ -83,26 +83,19 @@ def generate_block_model(nodes, groups, in_group_p, between_group_p):
                 probabilities[i][j] = between_group_p * group_sizes[i] * group_sizes[j] / 2
     return generate_sbm(group_memberships, probabilities)
 
-labels = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2]
+labels = []
 graphs = []
+for i in range(50):
+    #graphs.append(generate_GNP(70, 0.08))
+    graphs.append(generate_block_model(100, 2, 0.2, 0.01))
+    labels.append(1)
+
+for i in range(50):
+    #graphs.append(generate_GNP(72, 0.08))
+    temp_graph = generate_block_model(100, 2, 0.2, 0.01)
+    random_rewire(temp_graph, model='erdos', n_iter=10, edge_sweep=True)
+    graphs.append(temp_graph)
+    labels.append(2)
 #graphs.append(generate_GNP(100, 0.2))
-#graphs.append(generate_GNP(100, 0.2))
-#graphs.append(generate_GNP(100, 0.2))
-#graphs.append(generate_GNP(100, 0.2))
-#graphs.append(generate_GNP(100, 0.2))
-#graphs.append(generate_GNP(100, 0.3))
-#graphs.append(generate_GNP(100, 0.3))
-#graphs.append(generate_GNP(100, 0.3))
-#graphs.append(generate_GNP(100, 0.3))
-#graphs.append(generate_GNP(100, 0.3))
-graphs.append(generate_block_model(100, 2, 0.8, 0.2))
-graphs.append(generate_block_model(100, 2, 0.8, 0.2))
-graphs.append(generate_block_model(100, 2, 0.8, 0.2))
-graphs.append(generate_block_model(100, 2, 0.8, 0.2))
-graphs.append(generate_block_model(100, 2, 0.8, 0.2))
-graphs.append(generate_block_model(100, 5, 0.8, 0.2))
-graphs.append(generate_block_model(100, 5, 0.8, 0.2))
-graphs.append(generate_block_model(100, 5, 0.8, 0.2))
-graphs.append(generate_block_model(100, 5, 0.8, 0.2))
-graphs.append(generate_block_model(100, 5, 0.8, 0.2))
-write_to_files("TEST", graphs, labels)
+#graphs.append(generate_block_model(100, 2, 0.8, 0.2))
+write_to_files("EXP3", graphs, labels)

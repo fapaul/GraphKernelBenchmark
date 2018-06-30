@@ -1,0 +1,6 @@
+2 classes, 50 graphs each
+Community vs Bipartite
+
+generate_block_model(100, 2, 0.2, 0.01)
+
+generate_block_model(100, 2, 0, 0.2)

@@ -1,0 +1,1 @@
+2 classes, 50 graphs each, generate_GNP(70, 0.08) / generate_GNP(72, 0.08)
