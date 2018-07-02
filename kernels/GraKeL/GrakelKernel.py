@@ -23,7 +23,13 @@ class GrakelKernel(kernel.Kernel):
         pass
 
     def is_deterministic(self):
-        return False
+        if self.kernel_name == "Propagation":
+            return False
+        if self.kernel_name == "SVMTheta":
+            return False
+        if self.kernel_name == "NeighborhoodHash":
+            return False
+        return True
 
     def compute_kernel_matrices(self, run_number=0):
         ds = self.read_data(self.datasetname)
@@ -36,13 +42,13 @@ class GrakelKernel(kernel.Kernel):
         elif self.kernel_name == "RandomWalk":
             kernel = grakel.RandomWalk(random_seed=rand_seed)
         elif self.kernel_name == "PyramidMatch":
-            kernel = grakel.PyramidMatch(with_labels=True, L=4, d=6, random_seed=rand_seed)
+            kernel = grakel.PyramidMatch(with_labels=True, L=4, d=6)
         elif self.kernel_name == "VertexHistogram":
-            kernel = grakel.VertexHistogram(random_seed=rand_seed)
+            kernel = grakel.VertexHistogram()
         elif self.kernel_name == "WeisfeilerLehman":
-            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0], "random_seed": rand_seed}])
+            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0]}])
         elif self.kernel_name == "ShortestPath":
-            kernel = grakel.ShortestPath(random_seed=rand_seed)
+            kernel = grakel.ShortestPath()
         elif self.kernel_name == "GraphletSampling":
             kernel = grakel.GraphletSampling(random_seed=rand_seed)
         elif self.kernel_name == "LovaszTheta":
@@ -60,9 +66,9 @@ class GrakelKernel(kernel.Kernel):
         elif self.kernel_name == "SubgraphMatching":
             kernel = grakel.SubgraphMatching(random_seed=rand_seed)
         elif self.kernel_name == "EdgeHistogram":
-            kernel = grakel.EdgeHistogram(random_seed=rand_seed)
+            kernel = grakel.EdgeHistogram()
         elif self.kernel_name == "OddSth":
-            kernel = grakel.OddSth(random_seed=rand_seed)
+            kernel = grakel.OddSth()
         else:
             kernel = grakel.GraphKernel([{"name": self.parameters[0]}])
         kernelmatrix = kernel.fit_transform(G)
