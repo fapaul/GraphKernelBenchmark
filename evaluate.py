@@ -43,24 +43,39 @@ def score_n_fold(train, test, n, c):
 
 
 @timer
-def generate_kernels(kernel):
-    return kernel.compute_kernel_matrices()
+def generate_kernels(kernel, run_number=0):
+    return kernel.compute_kernel_matrices(run_number)
 
 
-def evaluate(kernel, dataset_name, data_dir):
+def evaluate(kernel, dataset_name, data_dir, number_of_runs=10):
     print('Running: ', kernel.kernel_name)
     kernel.compile()
 
     kernel.load_data()
-    kernel_matrices_paths, run_time = generate_kernels(kernel)
-    kernel_matrices_path = kernel_matrices_paths[0]
-    label_path = os.path.join(data_dir, dataset_name,
-                              '{}_graph_labels.txt'.format(dataset_name))
-    kernel_matrices = read_matrix(kernel_matrices_path, read_kernel_matrix)
-    labels = read_matrix(label_path, read_label_matrix)
     penalties = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
-    scores = [score_n_fold(kernel_matrices, labels, 10, c) for c in penalties]
-    return scores, run_time
+    if kernel.is_deterministic():
+        kernel_matrices_paths, run_time = generate_kernels(kernel)
+        kernel_matrices_path = kernel_matrices_paths[0]
+        label_path = os.path.join(data_dir, dataset_name,
+                                  '{}_graph_labels.txt'.format(dataset_name))
+        kernel_matrices = read_matrix(kernel_matrices_path, read_kernel_matrix)
+        labels = read_matrix(label_path, read_label_matrix)
+        scores = [[score_n_fold(kernel_matrices, labels, 10, c)] for c in penalties]
+        return scores, run_time
+    else:
+        scores = [[] for c in penalties]
+        run_times = []
+        for i in range(number_of_runs):
+            kernel_matrices_paths, run_time = generate_kernels(kernel, i)
+            kernel_matrices_path = kernel_matrices_paths[0]
+            label_path = os.path.join(data_dir, dataset_name,
+                                      '{}_graph_labels.txt'.format(dataset_name))
+            kernel_matrices = read_matrix(kernel_matrices_path, read_kernel_matrix)
+            labels = read_matrix(label_path, read_label_matrix)
+            for i in range(penalties.__len__()):
+                scores[i].append(score_n_fold(kernel_matrices, labels, 10, penalties[i]))
+            run_times.append(run_time)
+        return scores, run_times
 
 
 def run_benchmark(dataset_names):

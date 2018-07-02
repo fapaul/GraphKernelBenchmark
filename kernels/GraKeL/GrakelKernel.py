@@ -7,6 +7,7 @@ import grakel
 from grakel.graph import Graph
 from sklearn.utils import Bunch
 from collections import Counter
+import random
 
 class GrakelKernel(kernel.Kernel):
 
@@ -21,48 +22,52 @@ class GrakelKernel(kernel.Kernel):
     def load_data(self):
         pass
 
-    def compute_kernel_matrices(self):
+    def is_deterministic(self):
+        return False
+
+    def compute_kernel_matrices(self, run_number=0):
         ds = self.read_data(self.datasetname)
         G, labels = ds.data, ds.target
         kernel = 0
+        rand_seed = random.randint(0, 100000)
         #TODO configure other kernels and parameters
         if self.kernel_name == "Propagation":
-            kernel = grakel.Propagation(n_jobs=None, verbose=False, normalize=True, random_seed=42, M='TV', t_max=4, w=0.0001)
+            kernel = grakel.Propagation(n_jobs=None, verbose=False, normalize=True, M='TV', t_max=4, w=0.0001, random_seed=rand_seed)
         elif self.kernel_name == "RandomWalk":
-            kernel = grakel.RandomWalk()
+            kernel = grakel.RandomWalk(random_seed=rand_seed)
         elif self.kernel_name == "PyramidMatch":
-            kernel = grakel.PyramidMatch(with_labels=True, L=4, d=6)
+            kernel = grakel.PyramidMatch(with_labels=True, L=4, d=6, random_seed=rand_seed)
         elif self.kernel_name == "VertexHistogram":
-            kernel = grakel.VertexHistogram()
+            kernel = grakel.VertexHistogram(random_seed=rand_seed)
         elif self.kernel_name == "WeisfeilerLehman":
-            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0]}])
+            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0], "random_seed": rand_seed}])
         elif self.kernel_name == "ShortestPath":
-            kernel = grakel.ShortestPath()
+            kernel = grakel.ShortestPath(random_seed=rand_seed)
         elif self.kernel_name == "GraphletSampling":
-            kernel = grakel.GraphletSampling()
+            kernel = grakel.GraphletSampling(random_seed=rand_seed)
         elif self.kernel_name == "LovaszTheta":
-            kernel = grakel.LovaszTheta()
+            kernel = grakel.LovaszTheta(random_seed=rand_seed)
         elif self.kernel_name == "SVMTheta":
-            kernel = grakel.SvmTheta()
+            kernel = grakel.SvmTheta(random_seed=rand_seed)
         elif self.kernel_name == "MultiscaleLaplacian":
-            kernel = grakel.MultiscaleLaplacian()
+            kernel = grakel.MultiscaleLaplacian(random_seed=rand_seed)
         elif self.kernel_name == "NeighborhoodHash":
-            kernel = grakel.NeighborhoodHash()
+            kernel = grakel.NeighborhoodHash(random_seed=rand_seed)
         elif self.kernel_name == "NeighborhoodSubgraphPairwiseDistance":
-            kernel = grakel.NeighborhoodSubgraphPairwiseDistance()
+            kernel = grakel.NeighborhoodSubgraphPairwiseDistance(random_seed=rand_seed)
         elif self.kernel_name == "GraphHopper":
-            kernel = grakel.GraphHopper()
+            kernel = grakel.GraphHopper(random_seed=rand_seed)
         elif self.kernel_name == "SubgraphMatching":
-            kernel = grakel.SubgraphMatching()
+            kernel = grakel.SubgraphMatching(random_seed=rand_seed)
         elif self.kernel_name == "EdgeHistogram":
-            kernel = grakel.EdgeHistogram()
+            kernel = grakel.EdgeHistogram(random_seed=rand_seed)
         elif self.kernel_name == "OddSth":
-            kernel = grakel.OddSth()
+            kernel = grakel.OddSth(random_seed=rand_seed)
         else:
             kernel = grakel.GraphKernel([{"name": self.parameters[0]}])
         kernelmatrix = kernel.fit_transform(G)
-        np.savetxt(os.path.join(self.output_path,self.kernel_name), kernelmatrix, delimiter=' ', newline='\n')
-        return [os.path.join(self.output_path,self.kernel_name)]
+        np.savetxt(os.path.join(self.output_path,self.kernel_name + '_' + str(run_number)), kernelmatrix, delimiter=' ', newline='\n')
+        return [os.path.join(self.output_path,self.kernel_name + '_' + str(run_number))]
 
     def read_data(
         self,

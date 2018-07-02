@@ -17,10 +17,13 @@ class Kernel(ABC):
         pass
 
     @abstractmethod
-    def compute_kernel_matrices(self):
+    def compute_kernel_matrices(self, run_number=0):
         pass
 
     @staticmethod
     def get_tmp_dir():
         current_dir = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(current_dir, '..', 'tmp')
+
+    def is_deterministic(self):
+        return True

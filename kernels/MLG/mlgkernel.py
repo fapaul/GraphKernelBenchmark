@@ -18,7 +18,7 @@ class MLGKernel(kernel.Kernel):
         with open(os.path.join(self.get_tmp_dir(), self.tmp_file), 'w') as f:
             f.write('\n'.join(lines))
 
-    def compute_kernel_matrices(self):
+    def compute_kernel_matrices(self, run_number=0):
         converted = os.path.join(self.get_tmp_dir(), self.tmp_file)
         env = os.environ.copy()
         env['DSET'] = self.datasetname

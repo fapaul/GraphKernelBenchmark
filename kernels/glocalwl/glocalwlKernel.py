@@ -25,7 +25,7 @@ class GlocalWLKernel(kernel.Kernel):
         #is being done once kernel computes
         pass
 
-    def compute_kernel_matrices(self):
+    def compute_kernel_matrices(self, run_number=0):
         output_paths = []
         for para_combination in self.parameter_combinations:
             output_path = os.path.join(self.output_path, "glocalwl_"+ self.kernel_name+"_"+para_combination[0]+"_"+para_combination[1]+"_"+para_combination[2])
