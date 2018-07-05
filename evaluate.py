@@ -98,17 +98,27 @@ def evaluate(kernel, dataset_name, data_dir, number_of_runs=10):
 def run_benchmark(dataset_names):
     print('Tested datasets: ', dataset_names)
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    if not os.path.exists(os.path.join(current_dir, 'tmp')):
-        os.makedirs(os.path.join(current_dir, 'tmp'))
+    if not os.path.exists(os.path.join(current_dir, 'tmp', 'results')):
+        os.makedirs(os.path.join(current_dir, 'tmp', 'results'))
     output_path = os.path.join(current_dir, 'tmp', 'results')
     data_dir = os.path.join(current_dir, 'datasets')
     result = defaultdict(list)
     for dataset_name in dataset_names:
+        result_path = os.path.join(output_path, dataset_name)
+        if not os.path.exists(result_path):
+            os.makedirs(result_path)
         kernels = get_benchmarking_kernels(dataset_name, output_path, data_dir)
         for kernel in kernels:
+            path = os.path.join(result_path, kernel.kernel_name)
             benchmark_result = evaluate(kernel, dataset_name, data_dir)
+            write_partial_result(path, benchmark_result)
             result[dataset_name].append((kernel.kernel_name, benchmark_result))
     return result
+
+
+def write_partial_result(path, result):
+    with open(path, 'w') as f:
+        f.write(json.dumps(result))
 
 
 def main():
