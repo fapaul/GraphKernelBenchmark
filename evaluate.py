@@ -4,7 +4,8 @@ import json
 import time
 import argparse
 import numpy as np
-from collections import defaultdict
+from scipy.stats import sem
+from collections import defaultdict, namedtuple
 from sklearn import svm
 from sklearn.model_selection import ShuffleSplit, cross_val_score
 from config import get_benchmarking_kernels
@@ -50,6 +51,7 @@ def generate_kernels(kernel, run_number=0):
 def evaluate(kernel, dataset_name, data_dir, number_of_runs=10):
     print('Running: ', kernel.kernel_name)
     kernel.compile()
+    Result = namedtuple('Result', ['acc', 'stderr'])
 
     kernel.load_data()
     penalties = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
@@ -60,22 +62,37 @@ def evaluate(kernel, dataset_name, data_dir, number_of_runs=10):
                                   '{}_graph_labels.txt'.format(dataset_name))
         kernel_matrices = read_matrix(kernel_matrices_path, read_kernel_matrix)
         labels = read_matrix(label_path, read_label_matrix)
-        scores = [[score_n_fold(kernel_matrices, labels, 10, c)] for c in penalties]
-        return scores, run_time
+        scores = [score_n_fold(kernel_matrices, labels, 10, c) for c in
+                  penalties]
+        print(scores)
+        results = [(Result(s[0], 0), s[1]) for s in scores]
+        return results, Result(run_time, 0)
     else:
-        scores = [[] for c in penalties]
+        print('Validation runs: ', number_of_runs)
+        scores = [[] for _ in penalties]
         run_times = []
         for i in range(number_of_runs):
             kernel_matrices_paths, run_time = generate_kernels(kernel, i)
             kernel_matrices_path = kernel_matrices_paths[0]
             label_path = os.path.join(data_dir, dataset_name,
-                                      '{}_graph_labels.txt'.format(dataset_name))
-            kernel_matrices = read_matrix(kernel_matrices_path, read_kernel_matrix)
+                                      '{}_graph_labels.txt'.format(
+                                          dataset_name))
+            kernel_matrices = read_matrix(kernel_matrices_path,
+                                          read_kernel_matrix)
             labels = read_matrix(label_path, read_label_matrix)
-            for i in range(penalties.__len__()):
-                scores[i].append(score_n_fold(kernel_matrices, labels, 10, penalties[i]))
+            for i in range(len(penalties)):
+                scores[i].append(
+                    score_n_fold(kernel_matrices, labels, 10, penalties[i]))
             run_times.append(run_time)
-        return scores, run_times
+        result_scores = []
+        for s in scores:
+            c = s[0][1]
+            run_scores = [x[0] for x in s]
+            acc = np.mean(run_scores)
+            std_e = sem(run_scores)
+            result_scores.append((Result(acc, std_e), c))
+        run_time = Result(np.mean(run_times), sem(run_times))
+        return result_scores, run_time
 
 
 def run_benchmark(dataset_names):
@@ -96,7 +113,8 @@ def run_benchmark(dataset_names):
 
 def main():
     parser = argparse.ArgumentParser(description='Starting benchmark')
-    parser.add_argument('-d', '--data', help='Bechmark dataset', required=True, nargs='+')
+    parser.add_argument('-d', '--data', help='Benchmark dataset', required=True,
+                        nargs='+')
     datasets = vars(parser.parse_args())['data']
     print(json.dumps(run_benchmark(datasets), indent=4))
 
