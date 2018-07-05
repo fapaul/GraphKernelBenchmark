@@ -7,8 +7,8 @@ from scipy import sparse as sps
 
 class MLGKernel(kernel.Kernel):
 
-    def __init__(self, dataset_name, output_path, dataset_path):
-        super().__init__(dataset_name, output_path, dataset_path)
+    def __init__(self, dataset_name, output_path, dataset_path, workers):
+        super().__init__(dataset_name, output_path, dataset_path, workers)
         self.kernel_name = 'MLG'
 
     def load_data(self):
@@ -24,6 +24,7 @@ class MLGKernel(kernel.Kernel):
     def compute_kernel_matrices(self, run_number=0):
         converted = os.path.join(self.get_tmp_dir(), self.tmp_file)
         env = os.environ.copy()
+        env['WORKERS'] = str(self.workers)
         env['DSET'] = self.datasetname
         env['DATA'] = converted
         output = os.path.join(self.output_path, 'MLG')

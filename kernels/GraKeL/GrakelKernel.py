@@ -11,8 +11,9 @@ import random
 
 class GrakelKernel(kernel.Kernel):
 
-    def __init__(self, dataset_name, output_path, dataset_path, parameters, kernel_name):
-        super().__init__(dataset_name, output_path, dataset_path)
+    def __init__(self, dataset_name, output_path, dataset_path, parameters,
+                 kernel_name, workers):
+        super().__init__(dataset_name, output_path, dataset_path, workers)
         self.parameters = parameters
         self.kernel_name = kernel_name
 
@@ -34,41 +35,42 @@ class GrakelKernel(kernel.Kernel):
     def compute_kernel_matrices(self, run_number=0):
         ds = self.read_data(self.datasetname)
         G, labels = ds.data, ds.target
-        kernel = 0
         rand_seed = random.randint(0, 100000)
+
         #TODO configure other kernels and parameters
+        print('Workers: ', self.workers)
         if self.kernel_name == "Propagation":
-            kernel = grakel.Propagation(n_jobs=None, verbose=False, normalize=True, M='TV', t_max=4, w=0.0001, random_seed=rand_seed)
+            kernel = grakel.Propagation(n_jobs=self.workers, verbose=False, normalize=True, M='TV', t_max=4, w=0.0001, random_seed=rand_seed)
         elif self.kernel_name == "RandomWalk":
-            kernel = grakel.RandomWalk(random_seed=rand_seed)
+            kernel = grakel.RandomWalk(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "PyramidMatch":
-            kernel = grakel.PyramidMatch(with_labels=True, L=4, d=6)
+            kernel = grakel.PyramidMatch(n_jobs=self.workers, with_labels=True, L=4, d=6)
         elif self.kernel_name == "VertexHistogram":
-            kernel = grakel.VertexHistogram()
+            kernel = grakel.VertexHistogram(n_jobs=self.workers, )
         elif self.kernel_name == "WeisfeilerLehman":
-            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0]}])
+            kernel = grakel.GraphKernel([{"name": "weisfeiler_lehman"},{"name": self.parameters[0]}], n_jobs=self.workers)
         elif self.kernel_name == "ShortestPath":
-            kernel = grakel.ShortestPath()
+            kernel = grakel.ShortestPath(n_jobs=self.workers, )
         elif self.kernel_name == "GraphletSampling":
-            kernel = grakel.GraphletSampling(random_seed=rand_seed)
+            kernel = grakel.GraphletSampling(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "LovaszTheta":
-            kernel = grakel.LovaszTheta(random_seed=rand_seed)
+            kernel = grakel.LovaszTheta(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "SVMTheta":
-            kernel = grakel.SvmTheta(random_seed=rand_seed)
+            kernel = grakel.SvmTheta(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "MultiscaleLaplacian":
-            kernel = grakel.MultiscaleLaplacian(random_seed=rand_seed)
+            kernel = grakel.MultiscaleLaplacian(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "NeighborhoodHash":
-            kernel = grakel.NeighborhoodHash(random_seed=rand_seed)
+            kernel = grakel.NeighborhoodHash(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "NeighborhoodSubgraphPairwiseDistance":
-            kernel = grakel.NeighborhoodSubgraphPairwiseDistance(random_seed=rand_seed)
+            kernel = grakel.NeighborhoodSubgraphPairwiseDistance(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "GraphHopper":
-            kernel = grakel.GraphHopper(random_seed=rand_seed)
+            kernel = grakel.GraphHopper(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "SubgraphMatching":
-            kernel = grakel.SubgraphMatching(random_seed=rand_seed)
+            kernel = grakel.SubgraphMatching(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "EdgeHistogram":
-            kernel = grakel.EdgeHistogram()
+            kernel = grakel.EdgeHistogram(n_jobs=self.workers)
         elif self.kernel_name == "OddSth":
-            kernel = grakel.OddSth()
+            kernel = grakel.OddSth(n_jobs=self.workers)
         else:
             kernel = grakel.GraphKernel([{"name": self.parameters[0]}])
         kernelmatrix = kernel.fit_transform(G)
