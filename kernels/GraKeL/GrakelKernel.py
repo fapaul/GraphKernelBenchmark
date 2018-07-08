@@ -42,7 +42,7 @@ class GrakelKernel(kernel.Kernel):
         if self.kernel_name == "Propagation":
             kernel = grakel.Propagation(n_jobs=self.workers, verbose=False, normalize=True, M='TV', t_max=4, w=0.0001, random_seed=rand_seed)
         elif self.kernel_name == "RandomWalk":
-            kernel = grakel.RandomWalk(n_jobs=self.workers, random_seed=rand_seed)
+            kernel = grakel.RandomWalk(n_jobs=self.workers)
         elif self.kernel_name == "PyramidMatch":
             kernel = grakel.PyramidMatch(n_jobs=self.workers, with_labels=True, L=4, d=6)
         elif self.kernel_name == "VertexHistogram":
@@ -62,11 +62,11 @@ class GrakelKernel(kernel.Kernel):
         elif self.kernel_name == "NeighborhoodHash":
             kernel = grakel.NeighborhoodHash(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "NeighborhoodSubgraphPairwiseDistance":
-            kernel = grakel.NeighborhoodSubgraphPairwiseDistance(n_jobs=self.workers, random_seed=rand_seed)
+            kernel = grakel.NeighborhoodSubgraphPairwiseDistance(n_jobs=self.workers)
         elif self.kernel_name == "GraphHopper":
             kernel = grakel.GraphHopper(n_jobs=self.workers, random_seed=rand_seed)
         elif self.kernel_name == "SubgraphMatching":
-            kernel = grakel.SubgraphMatching(n_jobs=self.workers, random_seed=rand_seed)
+            kernel = grakel.SubgraphMatching(n_jobs=self.workers)
         elif self.kernel_name == "EdgeHistogram":
             kernel = grakel.EdgeHistogram(n_jobs=self.workers)
         elif self.kernel_name == "OddSth":

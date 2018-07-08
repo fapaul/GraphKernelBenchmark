@@ -23,18 +23,19 @@ cmake ./
 make
 ```
 
-Change name of `config.py.example` to `config.py` and choose kernels to compare.
-
 # Run
 
-Set `-d` parameter to folder in names `datasets` directory. Folder names need to be separated by a whitespace.
+Set `-d` parameter to folder names in `datasets` directory. In `config.py` you can find all currently supported kernels with their keys. 
 
 ```
-usage: evaluate.py [-h] -d DATA
+usage: evaluate.py [-h] -d DATA [DATA ...] -k KERNELS [KERNELS ...]
 
 Starting benchmark
 
 optional arguments:
   -h, --help            show this help message and exit
-  -d DATA, --data DATA  Bechmark dataset
+  -d DATA [DATA ...], --data DATA [DATA ...]
+                        Benchmark datasets
+  -k KERNELS [KERNELS ...], --kernels KERNELS [KERNELS ...]
+                        Benchmark kernels
 ```

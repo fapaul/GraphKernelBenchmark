@@ -13,8 +13,8 @@ class GlocalWLKernel(kernel.Kernel):
     #kernel_name = "WL3L", "WL2L", "WL3G", "WL2G", "Graphlet", "ShortestPath", "ColorRefinement"
     #all kernels use first parameter argument #1, WL and CR use #2, WL use #3
 
-    def __init__(self, dataset_name, output_path, dataset_path, parameter_combinations, kernel_name):
-        super().__init__(dataset_name, output_path, dataset_path)
+    def __init__(self, dataset_name, output_path, dataset_path, parameter_combinations, kernel_name, workers):
+        super().__init__(dataset_name, output_path, dataset_path, workers)
         self.parameter_combinations = parameter_combinations
         self.kernel_name = kernel_name
 

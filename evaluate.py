@@ -95,7 +95,7 @@ def evaluate(kernel, dataset_name, data_dir, number_of_runs=10):
         return result_scores, run_time
 
 
-def run_benchmark(dataset_names):
+def run_benchmark(dataset_names, kernel_names):
     print('Tested datasets: ', dataset_names)
     current_dir = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(os.path.join(current_dir, 'tmp', 'results')):
@@ -107,7 +107,8 @@ def run_benchmark(dataset_names):
         result_path = os.path.join(output_path, dataset_name)
         if not os.path.exists(result_path):
             os.makedirs(result_path)
-        kernels = get_benchmarking_kernels(dataset_name, output_path, data_dir)
+        kernels = get_benchmarking_kernels(dataset_name, output_path, data_dir,
+                                           kernel_names)
         for kernel in kernels:
             path = os.path.join(result_path, kernel.kernel_name)
             benchmark_result = evaluate(kernel, dataset_name, data_dir)
@@ -123,10 +124,14 @@ def write_partial_result(path, result):
 
 def main():
     parser = argparse.ArgumentParser(description='Starting benchmark')
-    parser.add_argument('-d', '--data', help='Benchmark dataset', required=True,
+    parser.add_argument('-d', '--data', help='Benchmark datasets', required=True,
                         nargs='+')
-    datasets = vars(parser.parse_args())['data']
-    print(json.dumps(run_benchmark(datasets), indent=4))
+    parser.add_argument('-k', '--kernels', help='Benchmark kernels', required=True,
+                        nargs='+')
+    args = vars(parser.parse_args())
+    datasets = args['data']
+    kernels = args['kernels']
+    print(json.dumps(run_benchmark(datasets, kernels), indent=4))
 
 
 if __name__ == '__main__':
