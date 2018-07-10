@@ -14,7 +14,6 @@ def get_kernel(kernel_class, params=None):
 KERNELS = {
     'MLG': get_kernel(MLGKernel),
     'WL3L': get_kernel(GlocalWLKernel, [[['-l', '1', '-i']], 'WL3L']),
-    # TODO: Fix name collision
     # 'WL3L': get_kernel(GlocalWLKernel, [[['-l', '2', '-i']], 'WL3L']),
     'WL3G': get_kernel(GlocalWLKernel, [[['-l', '1', '-i']], 'WL3G']),
     'WL2G': get_kernel(GlocalWLKernel, [[['-l', '1', '-i']], 'WL2G']),
@@ -41,6 +40,6 @@ KERNELS = {
 
 
 def get_benchmarking_kernels(dataset_name, output_path, data_dir, kernel_names):
-    workers = 4
+    workers = 1
     for name in kernel_names:
         yield KERNELS[name](dataset_name, output_path, data_dir, workers)
