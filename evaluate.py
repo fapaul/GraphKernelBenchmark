@@ -131,7 +131,7 @@ def main():
     args = vars(parser.parse_args())
     datasets = args['data']
     kernels = args['kernels']
-    print(json.dumps(run_benchmark(datasets, kernels), indent=4))
+    #print(json.dumps(run_benchmark(datasets, kernels), indent=4))
 
 
 if __name__ == '__main__':
