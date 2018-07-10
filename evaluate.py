@@ -131,6 +131,7 @@ def main():
     args = vars(parser.parse_args())
     datasets = args['data']
     kernels = args['kernels']
+    run_benchmark(datasets, kernels)
     #print(json.dumps(run_benchmark(datasets, kernels), indent=4))
 
 
